@@ -31,4 +31,29 @@ const getStateData = async (req, res) => {
   }
 };
 
-module.exports = { getAllStates, getStateData };
+const getStatesByContiguity = async (req, res) => {
+  // Extract the value of the contig query parameter from req
+  const { contig } = req.query;
+
+  try {
+    // Convert from string to bool
+    const isContiguous = contig === "true";
+
+    // Filter statesData based on contiguity
+    const filteredStates = statesData.filter((state) => {
+      const nonContiguous = ["AK", "HI"];
+
+      // Determine if the current state should be included based on contiguity
+      // if isContiguous = true, current state should not be included the nonContiguous array
+      return isContiguous
+        ? !nonContiguous.includes(state.code)
+        : nonContiguous.includes(state.code);
+    });
+
+    res.json(filteredStates);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { getAllStates, getStateData, getStatesByContiguity };
