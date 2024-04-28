@@ -134,6 +134,37 @@ const getRandomFunFact = async (req, res) => {
     }
 };
 
+const addFunFacts = async (req, res) => {
+    const stateCode = req.stateData.code;
+    const newFunFacts = req.body?.funfacts;
+
+    if (typeof newFunFacts === "undefined") {
+        return res
+            .status(400)
+            .json({ message: "State fun facts value required" });
+    } else if (!Array.isArray(newFunFacts)) {
+        return res
+            .status(400)
+            .json({ message: "State fun facts value must be an array" });
+    }
+
+    try {
+        // Find the state document or create a new one if it doesn't exist
+        const state = await State.findOneAndUpdate(
+            { stateCode },
+            { $push: { funfacts: { $each: newFunFacts } } }, // Use $push with $each to add all new fun facts
+            { new: true, upsert: true } // options to return the updated document and create if not exists
+        );
+
+        // Return state data with 200 if no new fun facts added, otherwise 201
+        newFunFacts.length === 0
+            ? res.status(200).json(state)
+            : res.status(201).json(state);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     getAllStates,
     getStateData,
@@ -143,4 +174,5 @@ module.exports = {
     getStatePopulation,
     getStateAdmissionDate,
     getRandomFunFact,
+    addFunFacts,
 };

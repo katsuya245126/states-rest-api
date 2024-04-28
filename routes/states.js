@@ -37,6 +37,12 @@ router.get(
 
 router.get("/:state/funfact", validateState, statesController.getRandomFunFact);
 
+// POST METHODS
+
+router.post("/:state/funfact", validateState, statesController.addFunFacts);
+
+// CATCH-ALL METHOD
+
 router.all("*", (req, res) => {
     // Check the Accept header or other indicators to decide between HTML and JSON
     if (req.accepts("html")) {
@@ -45,4 +51,5 @@ router.all("*", (req, res) => {
         res.status(404).json({ error: "404 Not Found" });
     }
 });
+
 module.exports = router;
