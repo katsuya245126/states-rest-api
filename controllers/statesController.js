@@ -2,7 +2,32 @@ const State = require("../models/State");
 const statesData = require("../models/statesData.json");
 
 const getAllStates = async (req, res) => {
-  res.json(statesData);
+  try {
+    // Call all funfacts from mongoDB
+    const funFactsData = await State.find({});
+
+    // Convert array to a map for easy access
+    const funFactsMap = new Map(
+      funFactsData.map((state) => [state.stateCode, state.funfacts])
+    );
+
+    // Add fun facts to states
+    const statesWithFunFacts = statesData.map((state) => {
+      // if state funfact exists about state, add it. Otherwise, don't add anything.
+      if (funFactsMap.get(state.code) !== undefined) {
+        return {
+          ...state,
+          funfacts: funFactsMap.get(state.code),
+        };
+      } else {
+        return { ...state };
+      }
+    });
+
+    res.json(statesWithFunFacts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 const getStateData = async (req, res) => {
