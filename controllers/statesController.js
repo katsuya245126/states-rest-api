@@ -165,6 +165,61 @@ const addFunFacts = async (req, res) => {
     }
 };
 
+const updateFunFact = async (req, res) => {
+    const { index, funfact } = req.body;
+    const stateCode = req.stateData.code;
+
+    // Check if index is provided + is a number/string number + greater than 0
+    if (index === undefined) {
+        return res
+            .status(400)
+            .json({ message: "State fun fact index value required" });
+    } else if (isNaN(index) || index < 1) {
+        return res.status(400).json({
+            message: `No Fun Fact found at that index for ${req.stateData.state}`,
+        });
+    }
+
+    // Convert boolean and number to string if necessary
+    let funfactStr = funfact;
+    if (typeof funfact === "boolean" || typeof funfact === "number") {
+        funfactStr = funfact.toString();
+    }
+
+    // Check if funfact is null or undefined, or an empty string
+    if (funfactStr == null || funfactStr === "") {
+        return res.status(400).json({ message: "Valid funfact required." });
+    }
+
+    try {
+        // Adjust index to be zero-based for the array
+        const arrayIndex = index - 1;
+
+        // Check if the state has any funfacts
+        const state = await State.findOne({ stateCode: stateCode });
+        if (!state || state.funfacts.length === 0) {
+            return res.status(404).json({ message: "State not found." });
+        }
+
+        // Check if the index is within bounds
+        if (arrayIndex >= state.funfacts.length) {
+            return res.status(400).json({
+                message: `No Fun Fact found at that index for ${req.stateData.state}`,
+            });
+        }
+
+        // Update the fun fact at the specific index
+        state.funfacts[arrayIndex] = funfact;
+
+        // Save the updated state document
+        await state.save();
+
+        res.status(200).json(state);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     getAllStates,
     getStateData,
@@ -175,4 +230,5 @@ module.exports = {
     getStateAdmissionDate,
     getRandomFunFact,
     addFunFacts,
+    updateFunFact,
 };

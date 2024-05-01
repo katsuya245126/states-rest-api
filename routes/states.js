@@ -41,6 +41,10 @@ router.get("/:state/funfact", validateState, statesController.getRandomFunFact);
 
 router.post("/:state/funfact", validateState, statesController.addFunFacts);
 
+// PATCH METHODS
+
+router.patch("/:state/funfact", validateState, statesController.updateFunFact);
+
 // CATCH-ALL METHOD
 
 router.all("*", (req, res) => {
