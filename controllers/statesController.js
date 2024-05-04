@@ -198,11 +198,13 @@ const updateFunFact = async (req, res) => {
         // Check if the state has any funfacts
         const state = await State.findOne({ stateCode: stateCode });
         if (!state || state.funfacts.length === 0) {
-            return res.status(404).json({ message: "State not found." });
+            return res.status(404).json({
+                message: `No Fun Facts found for ${req.stateData.state}`,
+            });
         }
 
         // Check if the index is within bounds
-        if (arrayIndex >= state.funfacts.length) {
+        if (arrayIndex >= state.funfacts.length || arrayIndex < 0) {
             return res.status(400).json({
                 message: `No Fun Fact found at that index for ${req.stateData.state}`,
             });
@@ -210,6 +212,52 @@ const updateFunFact = async (req, res) => {
 
         // Update the fun fact at the specific index
         state.funfacts[arrayIndex] = funfact;
+
+        // Save the updated state document
+        await state.save();
+
+        res.status(200).json(state);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const deleteFunFact = async (req, res) => {
+    const { index } = req.body;
+    const stateCode = req.stateData.code;
+
+    // Check if index is provided + is a number/string number + greater than 0
+    if (index === undefined) {
+        return res
+            .status(400)
+            .json({ message: "State fun fact index value required" });
+    } else if (isNaN(index) || index < 1) {
+        return res.status(400).json({
+            message: `No Fun Fact found at that index for ${req.stateData.state}`,
+        });
+    }
+
+    try {
+        // Adjust parsedIndex to be zero-based for the array
+        const arrayIndex = index - 1;
+
+        // Check if the state has any funfacts
+        const state = await State.findOne({ stateCode: stateCode });
+        if (!state || state.funfacts.length === 0) {
+            return res.status(404).json({
+                message: `No Fun Facts found for ${req.stateData.state}`,
+            });
+        }
+
+        // Check if the index is within bounds
+        if (arrayIndex >= state.funfacts.length || arrayIndex < 0) {
+            return res.status(400).json({
+                message: `No Fun Fact found at that index for ${req.stateData.state}`,
+            });
+        }
+
+        // Remove the fun fact at the specific index
+        state.funfacts.splice(arrayIndex, 1);
 
         // Save the updated state document
         await state.save();
@@ -231,4 +279,5 @@ module.exports = {
     getRandomFunFact,
     addFunFacts,
     updateFunFact,
+    deleteFunFact,
 };

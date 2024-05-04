@@ -45,6 +45,9 @@ router.post("/:state/funfact", validateState, statesController.addFunFacts);
 
 router.patch("/:state/funfact", validateState, statesController.updateFunFact);
 
+// DELETE METHODS
+router.delete("/:state/funfact", validateState, statesController.deleteFunFact);
+
 // CATCH-ALL METHOD
 
 router.all("*", (req, res) => {
