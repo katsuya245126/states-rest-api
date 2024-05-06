@@ -98,7 +98,7 @@ const getStatePopulation = (req, res) => {
 
     return res.json({
         state: stateData.state,
-        population: stateData.population.toString(),
+        population: stateData.population.toLocaleString("en-US"),
     });
 };
 
