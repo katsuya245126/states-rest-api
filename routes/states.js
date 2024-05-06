@@ -46,17 +46,13 @@ router.post("/:state/funfact", validateState, statesController.addFunFacts);
 router.patch("/:state/funfact", validateState, statesController.updateFunFact);
 
 // DELETE METHODS
+
 router.delete("/:state/funfact", validateState, statesController.deleteFunFact);
 
 // CATCH-ALL METHOD
 
 router.all("*", (req, res) => {
-    // Check the Accept header or other indicators to decide between HTML and JSON
-    if (req.accepts("html")) {
-        res.status(404).sendFile(path.join(__dirname, "../public", "404.html"));
-    } else {
-        res.status(404).json({ error: "404 Not Found" });
-    }
+    res.status(404).sendFile(path.join(__dirname, "../public", "404.html"));
 });
 
 module.exports = router;

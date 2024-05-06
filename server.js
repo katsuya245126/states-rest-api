@@ -22,6 +22,12 @@ app.get("/", (req, res) => {
 
 app.use("/states", require("./routes/states"));
 
+// CATCH-ALL METHOD
+
+app.all("*", (req, res) => {
+    res.status(404).sendFile(path.join(__dirname, "public", "404.html"));
+});
+
 mongoose.connection.once("open", () => {
     console.log("Connected to MongoDB");
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
