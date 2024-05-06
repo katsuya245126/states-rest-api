@@ -8,6 +8,9 @@ const PORT = process.env.PORT || 3500;
 
 connectDB();
 
+// Enable CORS for all routes
+app.use(cors());
+
 // Middleware for json
 app.use(express.json());
 
