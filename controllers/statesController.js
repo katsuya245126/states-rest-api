@@ -188,7 +188,9 @@ const updateFunFact = async (req, res) => {
 
     // Check if funfact is null or undefined, or an empty string
     if (funfactStr == null || funfactStr === "") {
-        return res.status(400).json({ message: "Valid funfact required." });
+        return res
+            .status(400)
+            .json({ message: "State fun fact value required" });
     }
 
     try {
