@@ -13,7 +13,7 @@ This RESTful API was developed for the final project of the INF653 Back End Web 
 
 ## Usage
 
-The API is accessible at the following base URL: `TO BE ADDED`
+The API is accessible at the following base URL: [https://states-rest-api.glitch.me/](https://states-rest-api.glitch.me/)
 
 ## Endpoints
 
@@ -36,11 +36,5 @@ The API is accessible at the following base URL: `TO BE ADDED`
 
 **DELETE Requests**
 - `/states/:state/funfact` - Delete a specific fun fact of the specified state
-
-**Deployment**
-
-This project is deployed on Glitch and can be accessed at the following URL:
-
-[LINK](LINK)
 
 The database is hosted on MongoDB Atlas, and the data is accessed via Mongoose.
